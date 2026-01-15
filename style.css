@@ -103,3 +103,18 @@ body {
 .secret.show {
   opacity: 0.6;
 }
+
+/* === FINAL FADE TO BLACK === */
+#fadeToBlack {
+  position: fixed;
+  inset: 0;
+  background: black;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 4s ease;
+  z-index: 999;
+}
+
+#fadeToBlack.show {
+  opacity: 1;
+}

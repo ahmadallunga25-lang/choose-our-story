@@ -149,7 +149,27 @@ Every time, ${herName}.`;
         secretEl.classList.remove("hidden");
         setTimeout(() => secretEl.classList.add("show"), 300);
       }
+
+      // 🎬 FINAL CINEMATIC
+    setTimeout(() => {
+      fadeOutMusic();
+      document.getElementById("fadeToBlack").classList.add("show");
+    }, 3500);
     });
   }
 
 });
+
+function fadeOutMusic() {
+  let vol = bgMusic.volume;
+  const fade = setInterval(() => {
+    if (vol > 0.02) {
+      vol -= 0.02;
+      bgMusic.volume = vol;
+    } else {
+      bgMusic.volume = 0;
+      bgMusic.pause();
+      clearInterval(fade);
+    }
+  }, 200);
+}

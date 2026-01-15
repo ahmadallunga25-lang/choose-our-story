@@ -6,6 +6,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const textEl = document.getElementById("text");
   const choicesEl = document.getElementById("choices");
   const bgMusic = document.getElementById("bgMusic");
+  const hintEl = document.querySelector(".hint");
+  const secretEl = document.querySelector(".secret");
 
   let musicStarted = false;
 
@@ -24,10 +26,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 100);
   }
 
+  function resetTextState() {
+    textEl.className = ""; // 🔥 RESET TOTAL
+  }
+
   function changeSceneText(newText, afterChange) {
     choicesEl.innerHTML = "";
+    resetTextState();
 
-    textEl.classList.remove("fade-in");
     textEl.classList.add("fade-out");
 
     setTimeout(() => {
@@ -46,115 +52,104 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     changeSceneText(
-      `That day, I saw you, ${herName}.
+`That day, I saw you, ${herName}.
 And for a moment… I froze.`,
       () => {
-        const btn1 = document.createElement("button");
-        btn1.textContent = "I walked toward you";
-        btn1.onclick = walkToward;
-
-        const btn2 = document.createElement("button");
-        btn2.textContent = "I walked away";
-        btn2.onclick = walkAway;
-
-        choicesEl.appendChild(btn1);
-        choicesEl.appendChild(btn2);
+        addBtn("I walked toward you", walkToward);
+        addBtn("I walked away", walkAway);
       }
     );
   }
 
+  function addBtn(text, action) {
+    const btn = document.createElement("button");
+    btn.textContent = text;
+    btn.onclick = action;
+    choicesEl.appendChild(btn);
+  }
+
   function walkToward() {
     changeSceneText(
-      `You looked at me.
+`You looked at me.
 And somehow, everything felt quieter.`,
-      () => {
-        const btn = document.createElement("button");
-        btn.textContent = "Continue";
-        btn.onclick = doubtScene;
-        choicesEl.appendChild(btn);
-      }
+      () => addBtn("Continue", doubtScene)
     );
   }
 
   function walkAway() {
     changeSceneText(
-      `I left.
+`I left.
 Nothing happened.
 And yet… something was missing.`,
-      () => {
-        const btn = document.createElement("button");
-        btn.textContent = "Go back";
-        btn.onclick = startStory;
-        choicesEl.appendChild(btn);
-      }
+      () => addBtn("Go back", startStory)
     );
   }
 
   function doubtScene() {
     changeSceneText(
-      `Not everything after that was easy.
+`Not everything after that was easy.
 There were days I questioned myself.
 Especially after ${specialMoment}.`,
       () => {
-        const stayBtn = document.createElement("button");
-        stayBtn.textContent = "I stayed";
-        stayBtn.onclick = finalScene;
-
-        const giveUpBtn = document.createElement("button");
-        giveUpBtn.textContent = "I gave up";
-        giveUpBtn.onclick = giveUpScene;
-
-        choicesEl.appendChild(stayBtn);
-        choicesEl.appendChild(giveUpBtn);
+        addBtn("I stayed", finalScene);
+        addBtn("I gave up", giveUpScene);
       }
     );
   }
 
   function giveUpScene() {
     changeSceneText(
-      `This is where the story ends.
+`This is where the story ends.
 Too early.`,
-      () => {
-        const btn = document.createElement("button");
-        btn.textContent = "Try again";
-        btn.onclick = doubtScene;
-        choicesEl.appendChild(btn);
-      }
+      () => addBtn("Try again", doubtScene)
     );
   }
 
   function finalScene() {
     changeSceneText(
-      `I realized something.
+`I realized something.
 No matter how many times I rewind the story…
 I still choose you.`,
-      () => {
-        const btn = document.createElement("button");
-        btn.textContent = "Read this";
-        btn.onclick = messageScene;
-        choicesEl.appendChild(btn);
-      }
+      () => addBtn("Read this", messageScene)
     );
   }
 
+  // === ENDING (MODE KHUSUS) ===
   function messageScene() {
-    changeSceneText(
-      `I’m not perfect.
+    choicesEl.innerHTML = "";
+    resetTextState();
+
+    textEl.textContent =
+`I’m not perfect.
 I don’t promise a flawless story.
 
 But if I’m given a choice—
 I’d still walk toward you.
 
-Every time, ${herName}.`
-    );
+Every time, ${herName}.`;
+
+    textEl.classList.add("ending");
+
+    if (hintEl) {
+      hintEl.classList.remove("hidden");
+      setTimeout(() => hintEl.classList.add("show"), 1200);
+    }
   }
 
-  // === OPENING CINEMATIC ===
   setTimeout(() => {
-    const beginBtn = document.createElement("button");
-    beginBtn.textContent = "Begin";
-    beginBtn.onclick = startStory;
-    choicesEl.appendChild(beginBtn);
+    addBtn("Begin", startStory);
   }, 2000);
+
+  if (hintEl) {
+    hintEl.addEventListener("click", () => {
+      hintEl.classList.remove("show");
+      hintEl.classList.add("hidden");
+
+      if (secretEl) {
+        secretEl.classList.remove("hidden");
+        setTimeout(() => secretEl.classList.add("show"), 300);
+      }
+    });
+  }
 
 });
